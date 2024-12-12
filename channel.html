@@ -53,8 +53,8 @@
 
     <h1>Channel Data Filter</h1>
 
-    <!-- Filter Textarea for Channel ID (Multiple IDs separated by commas) -->
-    <textarea id="filterText" placeholder="Enter Channel IDs to filter (e.g., 1234, 5678)"></textarea>
+    <!-- Filter Textarea for Channel ID (Multiple IDs entered one per line) -->
+    <textarea id="filterText" placeholder="Enter Channel IDs (one per line, e.g., 1234, 5678)"></textarea>
 
     <!-- Textarea to display the filtered result -->
     <textarea id="resultText" readonly placeholder="Filtered results will appear here"></textarea>
@@ -136,17 +136,18 @@
                     };
 
                     // Convert the input text (multiple Channel IDs) into an array and filter by Channel ID
-                    const filterIDs = filterText.split(',').map(id => id.trim());
+                    const filterIDs = filterText.split('\n').map(id => id.trim()).filter(id => id !== '');
 
                     const filteredData = data.filter(item => {
                         return item['Channel ID'] && filterIDs.includes(item['Channel ID'].toString());
                     });
 
-                    // If filter text is empty, show all rows
+                    // If filter text is empty, show no rows
                     if (filterText === '') {
-                        displayRows(data);
+                        displayRows([]);
                     } else {
                         displayFilteredResults(filteredData);
+                        displayRows(filteredData); // Show filtered rows in the table
                     }
                 })
                 .catch(error => {
