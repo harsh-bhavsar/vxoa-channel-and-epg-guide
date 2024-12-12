@@ -7,12 +7,14 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: #f9f9f9;
             margin: 20px;
         }
         h1 {
             text-align: center;
             color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
         }
         table {
             width: 80%;
@@ -31,21 +33,50 @@
             color: white;
         }
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f1f1f1;
+        }
+        tr:nth-child(odd) {
+            background-color: #e9f7ec;
         }
         tr:hover {
-            background-color: #f2f2f2;
+            background-color: #d1f7c4;
         }
         textarea {
-            width: 100%;
-            height: 150px;
+            width: 80%;
+            height: 250px;
             margin: 20px auto;
             display: block;
             font-family: monospace;
             font-size: 14px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+        }
+        .filter-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .textarea-label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+        .container {
+            text-align: center;
+            margin-top: 30px;
         }
         #dataTable {
             display: none;
+            margin: 20px auto;
+        }
+        .header-text {
+            font-weight: bold;
+            color: #4CAF50;
+            font-size: 16px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -54,10 +85,15 @@
     <h1>Channel Data Filter</h1>
 
     <!-- Filter Textarea for Channel ID (Multiple IDs entered one per line) -->
-    <textarea id="filterText" placeholder="Enter Channel IDs (one per line, e.g., 1234, 5678)"></textarea>
+    <div class="filter-container">
+        <label for="filterText" class="textarea-label">Enter Channel IDs (one per line, e.g., 1234, 5678):</label>
+        <textarea id="filterText" placeholder="Enter Channel IDs here (one per line)"></textarea>
+    </div>
 
     <!-- Textarea to display the filtered result -->
-    <textarea id="resultText" readonly placeholder="Filtered results will appear here"></textarea>
+    <div class="container">
+        <textarea id="resultText" readonly placeholder="Filtered results will appear here"></textarea>
+    </div>
 
     <!-- Table to display the data -->
     <table id="dataTable">
@@ -82,7 +118,7 @@
         // Function to fetch and display data from the raw JSON file in GitHub repository
         function fetchDataAndDisplayTable() {
             // Replace with your raw JSON file URL from GitHub
-            const jsonUrl = 'https://raw.githubusercontent.com/harsh-bhavsar/vxoa-channel-and-epg-guide/main/vxoa_epg_data.json';
+            const jsonUrl = 'https://raw.githubusercontent.com/yourusername/yourrepository/main/yourfile.json';
 
             fetch(jsonUrl)  // Fetch the raw JSON file from GitHub
                 .then(response => response.json())
@@ -129,9 +165,9 @@
 
                     // Function to display filtered results in the resultText area
                     const displayFilteredResults = (filteredData) => {
-                        resultText.value = '';  // Clear previous result
+                        resultText.value = 'AVS ID\tChannel ID\tCallsign\tChannel Name\tEPG Channel Number (Region 88)\tOlympia Only\tCluster Number\tURL\n'; // Add header line
                         filteredData.forEach(item => {
-                            resultText.value += `AVS ID: ${item['AVS ID']}, Channel ID: ${item['Channel ID']}, Callsign: ${item['Callsign']}, Channel Name: ${item['Channel Name']}, EPG Channel Number: ${item['EPG Channel Number (Region 88)']}, Olympia Only: ${item['Olympia Only']}, Cluster Number: ${item['Cluster Number']}, URL: ${item['URL']}\n\n`;
+                            resultText.value += `${item['AVS ID'] || ''}\t${item['Channel ID'] || ''}\t${item['Callsign'] || ''}\t${item['Channel Name'] || ''}\t${item['EPG Channel Number (Region 88)'] || ''}\t${item['Olympia Only'] || ''}\t${item['Cluster Number'] || ''}\t${item['URL'] || ''}\n`;
                         });
                     };
 
@@ -151,17 +187,4 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Error fetching the JSON data:', error);
-                    alert('Error loading data.');
-                });
-        }
-
-        // Event listener for filtering based on Channel ID
-        document.getElementById('filterText').addEventListener('input', fetchDataAndDisplayTable);
-
-        // Initial load of data
-        window.onload = fetchDataAndDisplayTable;
-    </script>
-
-</body>
-</html>
+                    console.error('Error fetching the JSON data:', e
