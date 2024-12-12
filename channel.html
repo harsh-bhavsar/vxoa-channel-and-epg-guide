@@ -118,7 +118,7 @@
         // Function to fetch and display data from the raw JSON file in GitHub repository
         function fetchDataAndDisplayTable() {
             // Replace with your raw JSON file URL from GitHub
-            const jsonUrl = 'https://raw.githubusercontent.com/harsh-bhavsar/vxoa-channel-and-epg-guide/main/vxoa_epg_data.json';';
+            const jsonUrl = 'https://raw.githubusercontent.com/harsh-bhavsar/vxoa-channel-and-epg-guide/main/vxoa_epg_data.json';
 
             fetch(jsonUrl)  // Fetch the raw JSON file from GitHub
                 .then(response => response.json())
@@ -174,10 +174,10 @@
                     // Convert the input text (multiple Channel IDs) into an array and filter by Channel ID
                     const filterIDs = filterText.split('\n').map(id => id.trim()).filter(id => id !== '');
 
-                    // If filter is empty, display all data; otherwise filter the data
+                    // If filter is empty, display all data in the table; otherwise filter the data
                     if (filterText === '') {
                         displayRows(data);  // Show all rows if no filter is applied
-                        displayFilteredResults(data);  // Show all results in the textarea
+                        resultText.value = '';  // Clear the textarea if no filter is applied
                     } else {
                         const filteredData = data.filter(item => {
                             return item['Channel ID'] && filterIDs.includes(item['Channel ID'].toString());
