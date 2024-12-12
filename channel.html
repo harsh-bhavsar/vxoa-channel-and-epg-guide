@@ -167,7 +167,7 @@
                     const displayFilteredResults = (filteredData) => {
                         resultText.value = 'AVS ID\tChannel ID\tCallsign\tChannel Name\tEPG Channel Number (Region 88)\tOlympia Only\tCluster Number\tURL\n'; // Add header line
                         filteredData.forEach(item => {
-                            resultText.value += `${item['AVS ID'] || ''}\t${item['Channel ID'] || ''}\t${item['Callsign'] || ''}\t${item['Channel Name'] || ''}\t${item['EPG Channel Number (Region 88)'] || ''}\t${item['Olympia Only'] || ''}\t${item['Cluster Number'] || ''}\t${item['URL'] || ''}\n`;
+                            resultText.value += `${item['Channel ID'] || ''}\t${item['Channel Name'] || ''}\t${item['EPG Channel Number (Region 88)'] || ''}\t${item['Cluster Number'] || ''}\t${item['URL'] || ''}\n`;
                         });
                     };
 
