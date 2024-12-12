@@ -38,7 +38,7 @@
         }
         textarea {
             width: 100%;
-            height: 100px;
+            height: 150px;
             margin: 20px auto;
             display: block;
             font-family: monospace;
@@ -63,8 +63,13 @@
     <table id="dataTable">
         <thead>
             <tr>
+                <th>AVS ID</th>
                 <th>Channel ID</th>
+                <th>Callsign</th>
                 <th>Channel Name</th>
+                <th>EPG Channel Number (Region 88)</th>
+                <th>Olympia Only</th>
+                <th>Cluster Number</th>
                 <th>URL</th>
             </tr>
         </thead>
@@ -92,15 +97,30 @@
                         tbody.innerHTML = '';  // Clear the table before inserting new rows
                         rows.forEach(row => {
                             const tr = document.createElement('tr');
+                            const tdAVSID = document.createElement('td');
+                            tdAVSID.textContent = row['AVS ID'] || ''; // Handle missing data
                             const tdChannelID = document.createElement('td');
                             tdChannelID.textContent = row['Channel ID'] || ''; // Handle missing data
+                            const tdCallsign = document.createElement('td');
+                            tdCallsign.textContent = row['Callsign'] || ''; // Handle missing data
                             const tdChannelName = document.createElement('td');
                             tdChannelName.textContent = row['Channel Name'] || ''; // Handle missing data
+                            const tdEPGChannelNumber = document.createElement('td');
+                            tdEPGChannelNumber.textContent = row['EPG Channel Number (Region 88)'] || ''; // Handle missing data
+                            const tdOlympiaOnly = document.createElement('td');
+                            tdOlympiaOnly.textContent = row['Olympia Only'] || ''; // Handle missing data
+                            const tdClusterNumber = document.createElement('td');
+                            tdClusterNumber.textContent = row['Cluster Number'] || ''; // Handle missing data
                             const tdURL = document.createElement('td');
                             tdURL.textContent = row['URL'] || ''; // Handle missing data
 
+                            tr.appendChild(tdAVSID);
                             tr.appendChild(tdChannelID);
+                            tr.appendChild(tdCallsign);
                             tr.appendChild(tdChannelName);
+                            tr.appendChild(tdEPGChannelNumber);
+                            tr.appendChild(tdOlympiaOnly);
+                            tr.appendChild(tdClusterNumber);
                             tr.appendChild(tdURL);
                             tbody.appendChild(tr);
                         });
@@ -111,7 +131,7 @@
                     const displayFilteredResults = (filteredData) => {
                         resultText.value = '';  // Clear previous result
                         filteredData.forEach(item => {
-                            resultText.value += `Channel ID: ${item['Channel ID']}, Channel Name: ${item['Channel Name']}, URL: ${item['URL']}\n\n`;
+                            resultText.value += `AVS ID: ${item['AVS ID']}, Channel ID: ${item['Channel ID']}, Callsign: ${item['Callsign']}, Channel Name: ${item['Channel Name']}, EPG Channel Number: ${item['EPG Channel Number (Region 88)']}, Olympia Only: ${item['Olympia Only']}, Cluster Number: ${item['Cluster Number']}, URL: ${item['URL']}\n\n`;
                         });
                     };
 
