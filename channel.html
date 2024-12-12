@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Channel Data Filter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin: 20px auto;
+            display: block;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        #dataTable {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Channel Data Filter</h1>
+
+    <!-- Filter Textarea for Channel ID -->
+    <textarea id="filterText" placeholder="Enter Channel ID to filter (e.g., 1234)"></textarea>
+
+    <!-- Textarea to display the filtered result -->
+    <textarea id="resultText" readonly placeholder="Filtered results will appear here"></textarea>
+
+    <!-- Table to display the data -->
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Channel ID</th>
+                <th>Channel Name</th>
+                <th>URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Function to fetch and display data from the raw JSON file in GitHub repository
+        function fetchDataAndDisplayTable() {
+            // Replace with your raw JSON file URL from GitHub
+            const jsonUrl = 'https://raw.githubusercontent.com/yourusername/yourrepository/main/yourfile.json';
+
+            fetch(jsonUrl)  // Fetch the raw JSON file from GitHub
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('dataTable');
+                    const tbody = table.querySelector('tbody');
+                    const resultText = document.getElementById('resultText');
+                    const filterText = document.getElementById('filterText').value.trim();
+
+                    // Function to display the table rows
+                    const displayRows = (rows) => {
+                        tbody.innerHTML = '';  // Clear the table before inserting new rows
+                        rows.forEach(row => {
+                            const tr = document.createElement('tr');
+                            const tdChannelID = document.createElement('td');
+                            tdChannelID.textContent = row['Channel ID'] || ''; // Handle missing data
+                            const tdChannelName = document.createElement('td');
+                            tdChannelName.textContent = row['Channel Name'] || ''; // Handle missing data
+                            const tdURL = document.createElement('td');
+                            tdURL.textContent = row['URL'] || ''; // Handle missing data
+
+                            tr.appendChild(tdChannelID);
+                            tr.appendChild(tdChannelName);
+                            tr.appendChild(tdURL);
+                            tbody.appendChild(tr);
+                        });
+                        table.style.display = rows.length > 0 ? 'table' : 'none';
+                    };
+
+                    // Function to display filtered results in the resultText area
+                    const displayFilteredResults = (filteredData) => {
+                        resultText.value = '';  // Clear previous result
+                        filteredData.forEach(item => {
+                            resultText.value += `Channel ID: ${item['Channel ID']}, Channel Name: ${item['Channel Name']}, URL: ${item['URL']}\n\n`;
+                        });
+                    };
+
+                    // Filter data based on input in textarea1 (Channel ID)
+                    const filteredData = data.filter(item => {
+                        return item['Channel ID'] && item['Channel ID'].toString().includes(filterText);
+                    });
+
+                    // If filter text is empty, show all rows
+                    if (filterText === '') {
+                        displayRows(data);
+                    } else {
+                        displayFilteredResults(filteredData);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching the JSON data:', error);
+                    alert('Error loading data.');
+                });
+        }
+
+        // Event listener for filtering based on Channel ID
+        document.getElementById('filterText').addEventListener('input', fetchDataAndDisplayTable);
+
+        // Initial load of data
+        window.onload = fetchDataAndDisplayTable;
+    </script>
+
+</body>
+</html>
