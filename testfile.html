@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Channel Data Filter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 20px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:nth-child(odd) {
+            background-color: #f0f0f0;
+        }
+        tr:hover {
+            background-color: #e6f7ff;
+        }
+        textarea {
+            width: 70%;
+            height: 150px;
+            margin: 20px auto;
+            display: block;
+            font-family: monospace;
+            font-size: 14px;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            white-space: pre;
+            box-sizing: border-box;
+        }
+        .filter-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .textarea-label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+        .container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        #dataTable {
+            display: none;
+            margin: 20px auto;
+        }
+        .header-text {
+            font-weight: bold;
+            color: #4CAF50;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Channel Data Filter</h1>
+
+    <!-- Filter Textarea for Channel ID (Multiple IDs entered one per line) -->
+    <div class="filter-container">
+        <label for="filterText" class="textarea-label">Enter Channel IDs (one per line, e.g., 1234, 5678):</label>
+        <textarea id="filterText" placeholder="Enter Channel IDs here (one per line)"></textarea>
+    </div>
+
+    <!-- Filter Textarea for Cluster Number -->
+    <div class="filter-container">
+        <label for="clusterFilterText" class="textarea-label">Enter Cluster Number(s) (one per line, e.g., 101, 102):</label>
+        <textarea id="clusterFilterText" placeholder="Enter Cluster Numbers here (one per line)"></textarea>
+    </div>
+
+    <!-- Textarea to display the filtered result -->
+    <div class="container">
+        <textarea id="resultText" readonly placeholder="Filtered results will appear here"></textarea>
+    </div>
+
+    <!-- Table to display the data -->
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Channel ID</th>
+                <th>Channel Name</th>
+                <th>Cluster Number</th>
+                <th>URL</th>
+                <th>EPG Channel Number (Region 88)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Function to fetch and display data from the raw JSON file in GitHub repository
+        function fetchDataAndDisplayTable() {
+            // Replace with your raw JSON file URL from GitHub
+            const jsonUrl = 'https://raw.githubusercontent.com/harsh-bhavsar/vxoa-channel-and-epg-guide/main/vxoa_epg_data.json';
+
+            fetch(jsonUrl)  // Fetch the raw JSON file from GitHub
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.getElementById('dataTable');
+                    const tbody = table.querySelector('tbody');
+                    const resultText = document.getElementById('resultText');
+                    const filterText = document.getElementById('filterText').value.trim();
+                    const clusterFilterText = document.getElementById('clusterFilterText').value.trim();
+
+                    // Function to display the table rows
+                    const displayRows = (rows) => {
+                        tbody.innerHTML = '';  // Clear the table before inserting new rows
+                        rows.forEach(row => {
+                            const tr = document.createElement('tr');
+                            const tdChannelID = document.createElement('td');
+                            tdChannelID.textContent = row['Channel ID'] || ''; // Handle missing data
+                            const tdChannelName = document.createElement('td');
+                            tdChannelName.textContent = row['Channel Name'] || ''; // Handle missing data
+                            const tdClusterNumber = document.createElement('td');
+                            tdClusterNumber.textContent = row['Cluster Number'] || ''; // Handle missing data
+                            const tdURL = document.createElement('td');
+                            tdURL.textContent = row['URL'] || ''; // Handle missing data
+                            const tdEPGChannelNumber = document.createElement('td');
+                            tdEPGChannelNumber.textContent = row['EPG Channel Number (Region 88)'] || ''; // Handle missing data
+
+                            tr.appendChild(tdChannelID);
+                            tr.appendChild(tdChannelName);
+                            tr.appendChild(tdClusterNumber);
+                            tr.appendChild(tdURL);
+                            tr.appendChild(tdEPGChannelNumber);
+                            tbody.appendChild(tr);
+                        });
+                        table.style.display = rows.length > 0 ? 'table' : 'none';
+                    };
+
+                    // Function to display filtered results in the resultText area
+                    const displayFilteredResults = (filteredData) => {
+                        // Clear the textarea before adding results
+                        resultText.value = 'Channel ID    Channel Name       Cluster Number   URL                           EPG Channel Number (Region 88)\n'; // Add header line
+                        filteredData.forEach(item => {
+                            resultText.value += `${item['Channel ID'] || ''}\t${item['Channel Name'] || ''}\t${item['Cluster Number'] || ''}\t${item['URL'] || ''}\t${item['EPG Channel Number (Region 88)'] || ''}\n`;
+                        });
+                    };
+
+                    // Convert the input text (multiple Channel IDs) into an array and filter by Channel ID
+                    const filterIDs = filterText.split('\n').map(id => id.trim()).filter(id => id !== '');
+                    const filterClusters = clusterFilterText.split('\n').map(num => num.trim()).filter(num => num !== '');
+
+                    // If filter is empty, display all data in the table; otherwise filter the data
+                    if (filterText === '' && clusterFilterText === '') {
+                        displayRows(data);  // Show all rows if no filter is applied
+                        resultText.value = '';  // Clear the textarea if no filter is applied
+                    } else {
+                        const filteredData = data.filter(item => {
+                            const matchesChannelID = item['Channel ID'] && filterIDs.includes(item['Channel ID'].toString());
+                            const matchesClusterNumber = item['Cluster Number'] && filterClusters.includes(item['Cluster Number'].toString());
+                            return matchesChannelID || matchesClusterNumber;
+                        });
+                        displayFilteredResults(filteredData);
+                        displayRows(filteredData); // Show filtered rows in the table
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching the JSON data:', error);
+                    alert('Error loading data.');
+                });
+        }
+
+        // Event listener for filtering based on Channel ID and Cluster Number
+        document.getElementById('filterText').addEventListener('input', fetchDataAndDisplayTable);
+        document.getElementById('clusterFilterText').addEventListener('input', fetchDataAndDisplayTable);
+
+        // Initial load of data
+        window.onload = fetchDataAndDisplayTable;
+    </script>
+
+</body>
+</html>
