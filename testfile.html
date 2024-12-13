@@ -124,7 +124,7 @@
         // Function to fetch and display data from the raw JSON file in GitHub repository
         function fetchDataAndDisplayTable() {
             // Replace with your raw JSON file URL from GitHub
-            const jsonUrl = 'https://raw.githubusercontent.com/harsh-bhavsar/vxoa-channel-and-epg-guide/main/vxoa_epg_data.json';
+            const jsonUrl =  'https://raw.githubusercontent.com/harsh-bhavsar/vxoa-channel-and-epg-guide/main/vxoa_epg_data.json';
 
             fetch(jsonUrl)  // Fetch the raw JSON file from GitHub
                 .then(response => response.json())
@@ -164,11 +164,38 @@
                     // Function to display filtered results in the resultText area
                     const displayFilteredResults = (filteredData) => {
                         // Clear the textarea before adding results
-                        resultText.value = 'Channel ID    Channel Name       Cluster Number   URL                           EPG Channel Number (Region 88)\n'; // Add header line
+                        resultText.value = ''; // Add header line in alignment
+                        const headers = ["Channel ID", "Channel Name", "Cluster Number", "URL", "EPG Channel Number (Region 88)"];
+                        const columnWidths = headers.map(header => header.length);
+
+                        // Calculate maximum column lengths
                         filteredData.forEach(item => {
-                            resultText.value += `${item['Channel ID'] || ''}\t${item['Channel Name'] || ''}\t${item['Cluster Number'] || ''}\t${item['URL'] || ''}\t${item['EPG Channel Number (Region 88)'] || ''}\n`;
+                            headers.forEach((header, index) => {
+                                const value = item[header] || '';
+                                columnWidths[index] = Math.max(columnWidths[index], value.length);
+                            });
+                        });
+
+                        // Format and add the header
+                        resultText.value += formatRow(headers, columnWidths);
+                        
+                        // Format and add each row
+                        filteredData.forEach(item => {
+                            const row = [
+                                item['Channel ID'] || '',
+                                item['Channel Name'] || '',
+                                item['Cluster Number'] || '',
+                                item['URL'] || '',
+                                item['EPG Channel Number (Region 88)'] || ''
+                            ];
+                            resultText.value += formatRow(row, columnWidths);
                         });
                     };
+
+                    // Format the row with padding for columns
+                    function formatRow(row, columnWidths) {
+                        return row.map((value, index) => value.padEnd(columnWidths[index], ' ')).join('  ') + '\n';
+                    }
 
                     // Convert the input text (multiple Channel IDs) into an array and filter by Channel ID
                     const filterIDs = filterText.split('\n').map(id => id.trim()).filter(id => id !== '');
