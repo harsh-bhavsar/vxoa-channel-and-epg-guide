@@ -7,14 +7,14 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #f4f0ff; /* Light Purple */
             margin: 20px;
             color: #333;
         }
         h1 {
             text-align: center;
-            color: #333;
-            font-size: 2em;
+            color: #6a1b9a; /* Purple */
+            font-size: 2.5em;
             margin-bottom: 20px;
         }
         table {
@@ -25,41 +25,40 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         th, td {
-            padding: 8px;
+            padding: 10px;
             text-align: center;
             border: 1px solid #ddd;
         }
         th {
-            background-color: #f1f1f1;
-            color: #333;
+            background-color: #7e57c2; /* Lighter Purple */
+            color: #fff;
         }
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f3e5f5; /* Very light purple */
         }
         tr:nth-child(odd) {
-            background-color: #f0f0f0;
+            background-color: #ede7f6; /* Lighter Purple */
         }
         tr:hover {
-            background-color: #e6f7ff;
+            background-color: #e1bee7; /* Purple on hover */
         }
         textarea {
-            width: 70%;
-            height: 150px;
-            margin: 20px auto;
-            display: block;
             font-family: monospace;
             font-size: 14px;
-            padding: 8px;
+            padding: 10px;
             border-radius: 5px;
             border: 1px solid #ccc;
             background-color: #fff;
-            white-space: pre;
+            width: 45%;
+            margin: 10px;
             box-sizing: border-box;
+            white-space: pre;
+            min-height: 150px;
+            display: inline-block;
         }
         .filter-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
             margin-bottom: 20px;
         }
         .textarea-label {
@@ -77,9 +76,14 @@
         }
         .header-text {
             font-weight: bold;
-            color: #4CAF50;
+            color: #6a1b9a; /* Purple */
             font-size: 16px;
             margin-top: 10px;
+        }
+        .result-container {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
         }
     </style>
 </head>
@@ -89,18 +93,20 @@
 
     <!-- Filter Textarea for Channel ID (Multiple IDs entered one per line) -->
     <div class="filter-container">
-        <label for="filterText" class="textarea-label">Enter Channel IDs (one per line, e.g., 1234, 5678):</label>
-        <textarea id="filterText" placeholder="Enter Channel IDs here (one per line)"></textarea>
-    </div>
+        <div>
+            <label for="filterText" class="textarea-label">Enter Channel IDs (one per line, e.g., 1234, 5678):</label>
+            <textarea id="filterText" placeholder="Enter Channel IDs here (one per line)"></textarea>
+        </div>
 
-    <!-- Filter Textarea for Cluster Number -->
-    <div class="filter-container">
-        <label for="clusterFilterText" class="textarea-label">Enter Cluster Number(s) (one per line, e.g., 101, 102):</label>
-        <textarea id="clusterFilterText" placeholder="Enter Cluster Numbers here (one per line)"></textarea>
+        <!-- Filter Textarea for Cluster Number -->
+        <div>
+            <label for="clusterFilterText" class="textarea-label">Enter Cluster Number(s) (one per line, e.g., 101, 102):</label>
+            <textarea id="clusterFilterText" placeholder="Enter Cluster Numbers here (one per line)"></textarea>
+        </div>
     </div>
 
     <!-- Textarea to display the filtered result -->
-    <div class="container">
+    <div class="result-container">
         <textarea id="resultText" readonly placeholder="Filtered results will appear here"></textarea>
     </div>
 
@@ -124,7 +130,7 @@
         // Function to fetch and display data from the raw JSON file in GitHub repository
         function fetchDataAndDisplayTable() {
             // Replace with your raw JSON file URL from GitHub
-            const jsonUrl =  'https://raw.githubusercontent.com/harsh-bhavsar/vxoa-channel-and-epg-guide/main/vxoa_epg_data.json';
+            const jsonUrl = 'https://raw.githubusercontent.com/harsh-bhavsar/vxoa-channel-and-epg-guide/main/vxoa_epg_data.json';
 
             fetch(jsonUrl)  // Fetch the raw JSON file from GitHub
                 .then(response => response.json())
