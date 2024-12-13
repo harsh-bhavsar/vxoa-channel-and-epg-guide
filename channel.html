@@ -165,9 +165,9 @@
 
                     // Function to display filtered results in the resultText area
                     const displayFilteredResults = (filteredData) => {
-                        resultText.value = 'Channel ID\tChannel Name\tEPG Channel Number (Region 88)\tCluster Number\tURL\n'; // Add header line
+                        resultText.value = 'Channel ID\tChannel Name\tCluster Number\tURL\tEPG Channel Number (Region 88)\n'; // Add header line
                         filteredData.forEach(item => {
-                            resultText.value += `${item['Channel ID'] || ''}\t${item['Channel Name'] || ''}\t${item['EPG Channel Number (Region 88)'] || ''}\t${item['Cluster Number'] || ''}\t${item['URL'] || ''}\n`;
+                            resultText.value += `${item['Channel ID'] || ''}\t${item['Channel Name'] || ''}t${item['Cluster Number'] || ''}\t${item['URL'] || ''}\t${item['EPG Channel Number (Region 88)'] || ''}\\n`;
                         });
                     };
 
