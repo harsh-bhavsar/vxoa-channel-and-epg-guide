@@ -25,9 +25,10 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         th, td {
-            padding: 10px;
+            padding: 5px;  /* Reduced padding to make the cells smaller */
             text-align: center;
             border: 1px solid #ddd;
+            font-size: 12px; /* Reduce the font size for smaller text */
         }
         th {
             background-color: #7e57c2; /* Lighter Purple */
@@ -85,6 +86,9 @@
             margin-top: 20px;
             text-align: center;
         }
+        tr {
+            height: 20px;  /* Optional: Set a specific height for rows */
+        }
     </style>
 </head>
 <body>
@@ -130,7 +134,7 @@
         // Function to fetch and display data from the raw JSON file in GitHub repository
         function fetchDataAndDisplayTable() {
             // Replace with your raw JSON file URL from GitHub
-            const jsonUrl = 'https://raw.githubusercontent.com/harsh-bhavsar/vxoa-channel-and-epg-guide/main/vxoa_epg_data.json';
+            const jsonUrl = 'https://raw.githubusercontent.com/yourusername/yourrepository/main/yourfile.json';
 
             fetch(jsonUrl)  // Fetch the raw JSON file from GitHub
                 .then(response => response.json())
