@@ -28,6 +28,7 @@
             padding: 8px;
             text-align: center;
             border: 1px solid #ddd;
+            cursor: pointer; /* Make headers clickable */
         }
         th {
             background-color: #4CAF50;
@@ -102,11 +103,12 @@
     <table id="dataTable">
         <thead>
             <tr>
-                <th>Channel ID</th>
-                <th>Channel Name</th>
-                <th>Cluster Number</th>
-                <th>URL</th>
-                <th>EPG Channel Number (Region 88)</th>
+                <th data-column="Channel ID">Channel ID</th>
+                <th data-column="Channel Name">Channel Name</th>
+                <th data-column="Cluster Number">Cluster Number</th>
+                <th data-column="URL">URL</th>
+                <th data-column="EPG Channel Number (Region 88)">EPG Channel Number (Region 88)</th>
+                <th data-column="Web Client">Web Client</th>
             </tr>
         </thead>
         <tbody>
@@ -115,6 +117,8 @@
     </table>
 
     <script>
+        let sortOrder = { column: null, ascending: true }; // Store sort state
+
         // Function to fetch and display data from the raw JSON file in GitHub repository
         function fetchDataAndDisplayTable() {
             // Replace with your raw JSON file URL from GitHub
@@ -143,7 +147,7 @@
                             tdURL.textContent = row['URL'] || ''; // Handle missing data
                             const tdEPGChannelNumber = document.createElement('td');
                             tdEPGChannelNumber.textContent = row['EPG Channel Number (Region 88)'] || ''; // Handle missing data
-
+                                                    
                             tr.appendChild(tdChannelID);
                             tr.appendChild(tdChannelName);
                             tr.appendChild(tdClusterNumber);
@@ -186,6 +190,34 @@
 
         // Event listener for filtering based on Channel ID
         document.getElementById('filterText').addEventListener('input', fetchDataAndDisplayTable);
+
+        // Sorting function
+        function sortTable(column) {
+            const rows = Array.from(document.querySelectorAll('#dataTable tbody tr'));
+            const index = column.dataset.column;
+            
+            rows.sort((rowA, rowB) => {
+                const cellA = rowA.querySelector(`td:nth-child(${Array.from(rowA.parentNode.children).indexOf(rowA) + 1})`).textContent;
+                const cellB = rowB.querySelector(`td:nth-child(${Array.from(rowB.parentNode.children).indexOf(rowB) + 1})`).textContent;
+
+                if (sortOrder.ascending) {
+                    return cellA.localeCompare(cellB);
+                } else {
+                    return cellB.localeCompare(cellA);
+                }
+            });
+
+            // Append sorted rows to the table
+            rows.forEach(row => document.querySelector('#dataTable tbody').appendChild(row));
+
+            // Toggle sorting order for the next click
+            sortOrder.ascending = !sortOrder.ascending;
+        }
+
+        // Add event listeners to table headers for sorting
+        document.querySelectorAll('#dataTable th').forEach(header => {
+            header.addEventListener('click', () => sortTable(header));
+        });
 
         // Initial load of data
         window.onload = fetchDataAndDisplayTable;
