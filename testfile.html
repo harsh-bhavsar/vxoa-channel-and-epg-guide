@@ -131,6 +131,9 @@
     </table>
 
     <script>
+
+          let sortOrder = { column: null, ascending: true }; // Store sort state
+        
         // Function to fetch and display data from the raw JSON file in GitHub repository
         function fetchDataAndDisplayTable() {
             // Replace with your raw JSON file URL from GitHub
@@ -229,8 +232,37 @@
                     console.error('Error fetching the JSON data:', error);
                     alert('Error loading data.');
                 });
+
+             // Sorting function
+        function sortTable(header) {
+            const rows = Array.from(document.querySelectorAll('#dataTable tbody tr'));
+            const columnIndex = Array.from(header.parentElement.children).indexOf(header); // Get the index of the clicked column
+            
+            rows.sort((rowA, rowB) => {
+                const cellA = rowA.children[columnIndex].textContent.trim();
+                const cellB = rowB.children[columnIndex].textContent.trim();
+
+                // Handle numeric sorting for Channel ID and Cluster Number
+                const isNumeric = !isNaN(cellA) && !isNaN(cellB);
+                if (isNumeric) {
+                    return sortOrder.ascending ? (parseFloat(cellA) - parseFloat(cellB)) : (parseFloat(cellB) - parseFloat(cellA));
+                } else {
+                    return sortOrder.ascending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+                }
+            });
+
+        }
+   // Append sorted rows to the table
+            rows.forEach(row => document.querySelector('#dataTable tbody').appendChild(row));
+
+            // Toggle sorting order for the next click
+            sortOrder.ascending = !sortOrder.ascending;
         }
 
+        // Add event listeners to table headers for sorting
+        document.querySelectorAll('#dataTable th').forEach(header => {
+            header.addEventListener('click', () => sortTable(header));
+        });
         // Event listener for filtering based on Channel ID and Cluster Number
         document.getElementById('filterText').addEventListener('input', fetchDataAndDisplayTable);
         document.getElementById('clusterFilterText').addEventListener('input', fetchDataAndDisplayTable);
