@@ -103,11 +103,11 @@
     <table id="dataTable">
         <thead>
             <tr>
-                <th data-column="Channel ID">Channel ID</th>
-                <th data-column="Channel Name">Channel Name</th>
-                <th data-column="Cluster Number">Cluster Number</th>
-                <th data-column="URL">URL</th>
-                <th data-column="EPG Channel Number (Region 88)">EPG Channel Number (Region 88)</th>
+                <th>Channel ID</th>
+                <th>Channel Name</th>
+                <th>Cluster Number</th>
+                <th>URL</th>
+                <th>EPG Channel Number (Region 88)</th>
          </tr>
         </thead>
         <tbody>
@@ -191,18 +191,20 @@
         document.getElementById('filterText').addEventListener('input', fetchDataAndDisplayTable);
 
         // Sorting function
-        function sortTable(column) {
+        function sortTable(header) {
             const rows = Array.from(document.querySelectorAll('#dataTable tbody tr'));
-            const index = column.dataset.column;
+            const columnIndex = Array.from(header.parentElement.children).indexOf(header); // Get the index of the clicked column
             
             rows.sort((rowA, rowB) => {
-                const cellA = rowA.querySelector(`td:nth-child(${Array.from(rowA.parentNode.children).indexOf(rowA) + 1})`).textContent;
-                const cellB = rowB.querySelector(`td:nth-child(${Array.from(rowB.parentNode.children).indexOf(rowB) + 1})`).textContent;
+                const cellA = rowA.children[columnIndex].textContent.trim();
+                const cellB = rowB.children[columnIndex].textContent.trim();
 
-                if (sortOrder.ascending) {
-                    return cellA.localeCompare(cellB);
+                // Handle numeric sorting for Channel ID and Cluster Number
+                const isNumeric = !isNaN(cellA) && !isNaN(cellB);
+                if (isNumeric) {
+                    return sortOrder.ascending ? (parseFloat(cellA) - parseFloat(cellB)) : (parseFloat(cellB) - parseFloat(cellA));
                 } else {
-                    return cellB.localeCompare(cellA);
+                    return sortOrder.ascending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
                 }
             });
 
